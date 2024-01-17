@@ -105,6 +105,7 @@ jobs:
         env:
           CIBW_SKIP: cp37-macosx_arm64
           CIBW_BUILD: ${{ env.CIBW_BUILD_IDENTIFIER }}
+          CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_TEST_SKIP: cp*-macosx_arm64
           CIBW_MANYLINUX_IMAGE: manylinux_2_28
