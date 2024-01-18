@@ -33,10 +33,10 @@ jobs:
           - os: ubuntu-latest
             architecture: x64
             platform_id: manylinux_aarch64
-        exclude:
           - os: ubuntu-latest
             architecture: x64
             platform_id: manylinux_x86_64
+        exclude:
           - os: macos-latest
             architecture: x64
             platform_id: macosx_*
@@ -110,7 +110,7 @@ jobs:
           output-dir: wheelhouse
         env:
           CIBW_SKIP: cp37-macosx_arm64
-          CIBW_BUILD: ${{ env.CIBW_BUILD_IDENTIFIER }}
+          CIBW_BUILD: ${{ env.CIBW_BUILD_IDENTIFIER }},manylinux_x86_64
           CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_TEST_SKIP: cp*-macosx_arm64
