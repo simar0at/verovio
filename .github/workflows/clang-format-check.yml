@@ -1,8 +1,8 @@
 name: Check clang-format
 on: 
-  - push:
+  push:
       branches: [develop-pypi, master]
-  - pull_request: {}
+  pull_request: {}
 jobs:
   formatting-check:
     runs-on: ubuntu-latest
