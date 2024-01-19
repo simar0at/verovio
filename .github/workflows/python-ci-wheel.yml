@@ -28,14 +28,10 @@ jobs:
         os: [ubuntu-latest] # macos-latest, windows-latest,
         python-version: ["3.10"] #"3.8", "3.9", "3.10", "3.11", "3.12"
         architecture: [x86, x64]
-        platform_id: [manylinux_aarch64, manylinux_x86_64]
         include:
           - os: ubuntu-latest
             architecture: x64
-            platform_id: manylinux_aarch64
-          - os: ubuntu-latest
-            architecture: x64
-            platform_id: manylinux_x86_64
+            platform_id: manylinux_*
         exclude:
           - os: macos-latest
             architecture: x64
@@ -97,7 +93,7 @@ jobs:
       #===============================================#
       # Set up QEMU
       - name: Set up QEMU
-        if: matrix.platform_id == 'manylinux_aarch64'
+        if: matrix.platform_id == 'manylinux_*'
         uses: docker/setup-qemu-action@v3
         with:
           platforms: all
@@ -110,7 +106,7 @@ jobs:
           output-dir: wheelhouse
         env:
           CIBW_SKIP: cp37-macosx_arm64
-          CIBW_BUILD: ${{ env.CIBW_BUILD_IDENTIFIER }},manylinux_x86_64
+          CIBW_BUILD: ${{ env.CIBW_BUILD_IDENTIFIER }}
           CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_TEST_SKIP: cp*-macosx_arm64
@@ -118,6 +114,14 @@ jobs:
           CIBW_BEFORE_ALL_MACOS: brew update && brew install swig
           CIBW_BEFORE_ALL_WINDOWS: choco install swig -f -y
           CIBW_BEFORE_BUILD: swig -version && bash -c 'cd tools; ./get_git_commit.sh' && swig -c++ -python -py3 ./bindings/python/verovio.i
+
+      #===============================================#
+      # Upload artifacts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cibuildwheel-${{ runner.os }}-python-${{ matrix.python-version }}-${{ matrix.architecture }}
+          path: ./wheelhouse/*.whl
 
       #===============================================#
       # Check build
@@ -152,13 +156,6 @@ jobs:
       - name: Check wheel installation
         working-directory: wheelhouse
         run: python -c "import verovio; tk = verovio.toolkit(); v = tk.getVersion(); print('verovio.toolkit.getVersion():', v)"
-
-      #===============================================#
-      # Upload artifacts
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cibuildwheel-${{ runner.os }}-python-${{ matrix.python-version }}-${{ matrix.architecture }}
-          path: ./wheelhouse/*.whl
 
   #===============================================#
   #         BUILD SOURCE DISTRIBUTION             #
