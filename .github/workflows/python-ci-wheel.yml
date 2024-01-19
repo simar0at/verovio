@@ -35,13 +35,10 @@ jobs:
         exclude:
           - os: macos-latest
             architecture: x64
-            platform_id: macosx_*
           - os: windows-latest
             architecture: x64
-            platform_id: win_amd64
           - os: windows-latest
             architecture: x86
-            platform_id: win32
           - os: macos-latest
             architecture: x86
           - os: ubuntu-latest
